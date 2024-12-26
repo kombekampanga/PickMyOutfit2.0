@@ -86,6 +86,25 @@ export default function WardropeApp(props: { toggle: any; }) {
       fetchWardrobe();
     }, []);
 
+    useEffect(() => {
+      updateNextandPrevButtons('top', currentTopIndex);
+      updateNextandPrevButtons('bottom', currentBottomIndex);
+      updateNextandPrevButtons('shoe', currentShoeIndex);
+
+    }, [currentTops, 
+      currentBottoms, 
+      currentShoes, 
+      currentTopIndex, 
+      currentBottomIndex, 
+      currentShoeIndex,
+      disableTopPrevButton,
+      disableTopNextButton,
+      disableBottomPrevButton,
+      disableBottomNextButton,
+      disableShoePrevButton,
+      disableShoeNextButton
+    ])
+
     const getNextPhoto = (clothingType: string) => {
       // based on clothing type edit different next states
       switch (clothingType) {
@@ -253,8 +272,6 @@ export default function WardropeApp(props: { toggle: any; }) {
           if (newSelection.includes("Show All") && selectedWeatherFilters.includes("Show All")){
             showEntireWardrobe()
             return;
-          } else if (selectedWeatherFilters.includes("Show All")){
-            combinedFilters = newSelection;
           } else {
             combinedFilters = [...selectedWeatherFilters, ...newSelection];
           }
@@ -263,14 +280,16 @@ export default function WardropeApp(props: { toggle: any; }) {
           if (newSelection.includes("Show All") && selectedOccasionFilters.includes("Show All")){
             showEntireWardrobe()
             return;
-          } else if (selectedOccasionFilters.includes("Show All")){
-            combinedFilters = newSelection;
           } else {
             combinedFilters = [...newSelection, ...selectedOccasionFilters];
           }
           break;
       }
       console.log("combined filters: ", combinedFilters)
+      // remove all show alls
+      if (combinedFilters.includes("Show All")){
+        combinedFilters = combinedFilters.filter(filter => filter != "Show All")
+      }
       const filteredWardrobe = completeWardrobe.filter((clothingItem) => {
         return combinedFilters.every(filterSelection => clothingItem.toLowerCase().includes(filterSelection.toLowerCase()));
       });
@@ -284,9 +303,9 @@ export default function WardropeApp(props: { toggle: any; }) {
       setCurrentBottomIndex(0);
       setCurrentTopIndex(0);
       setCurrentShoeIndex(0);
-      updateNextandPrevButtons('top', 0);
-      updateNextandPrevButtons('bottom', 0);
-      updateNextandPrevButtons('shoe', 0);
+      // updateNextandPrevButtons('top', 0);
+      // updateNextandPrevButtons('bottom', 0);
+      // updateNextandPrevButtons('shoe', 0);
     }
 
     const showEntireWardrobe = () => {
@@ -299,9 +318,9 @@ export default function WardropeApp(props: { toggle: any; }) {
       setCurrentBottomIndex(0);
       setCurrentTopIndex(0);
       setCurrentShoeIndex(0);
-      updateNextandPrevButtons('top', 0);
-      updateNextandPrevButtons('bottom', 0);
-      updateNextandPrevButtons('shoe', 0);
+      // updateNextandPrevButtons('top', 0);
+      // updateNextandPrevButtons('bottom', 0);
+      // updateNextandPrevButtons('shoe', 0);
   
     }
     
