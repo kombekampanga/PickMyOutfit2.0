@@ -75,7 +75,7 @@ export default function WardropeApp(props: { toggle: any; }) {
           alert(error.response.data);
         }
       }
-      
+
       fetchWardrobe();
     }, []);
 
@@ -85,46 +85,21 @@ export default function WardropeApp(props: { toggle: any; }) {
         case "top":
           const updatedTopIndex = currentTopIndex + 1;
           setCurrentTopIndex(updatedTopIndex)
-          // if this is now the last image, disable the next button
-          if (updatedTopIndex == (currentBottoms.length - 1)){
-            setDisableTopNextButton(true);
-          }
-
-          // if this is no longer the first image, enable the previous button
-          if (updatedTopIndex > 0){
-            setDisableTopPrevButton(false);
-          }
+          updateNextandPrevButtons('top', updatedTopIndex);
           break;
 
         case "bottom":
           const updatedBottomIndex = currentBottomIndex + 1;
           setCurrentBottomIndex(updatedBottomIndex)
-
-          // if this is now the last image, disable the next button
-          if (updatedBottomIndex == (currentBottoms.length - 1)){
-            setDisableBottomNextButton(true);
-          }
-
-          // if this is no longer the first image, enable the previous button
-          if (updatedBottomIndex > 0){
-            setDisableBottomPrevButton(false);
-          }
+          updateNextandPrevButtons('bottom', updatedBottomIndex);
           break;
 
-        case "shoes":
+        case "shoe":
           const updatedShoeIndex = currentShoeIndex + 1;
           setCurrentShoeIndex(updatedShoeIndex)
-          // if this is now the last image, disable the next button
-          if (updatedShoeIndex == (currentShoes.length - 1)){
-            setDisableShoeNextButton(true);
-          }
-
-          // if this is no longer the first image, enable the previous button
-          if (updatedShoeIndex > 0){
-            setDisableShoePrevButton(false);
-          }
+          updateNextandPrevButtons('shoe', updatedShoeIndex);
           break;
-
+          
         default:
           break;
       }
@@ -135,41 +110,90 @@ export default function WardropeApp(props: { toggle: any; }) {
         case "top":
           const updatedTopIndex = currentTopIndex - 1;
           setCurrentTopIndex(updatedTopIndex)
-          // if this is now the first image, disable the prev button
-          if (updatedTopIndex == 0){
-            setDisableTopPrevButton(true);
-          }
-
-          // if this is no longer the last image, enable the next button
-          if (updatedTopIndex < (currentTops.length - 1)){
-            setDisableTopNextButton(false);
-          }
+          updateNextandPrevButtons('top', updatedTopIndex);
           break;
 
         case "bottom":
           const updatedBottomIndex = currentBottomIndex - 1;
           setCurrentBottomIndex(updatedBottomIndex)
+          updateNextandPrevButtons('bottom', updatedBottomIndex);
+          break;
+
+        case "shoe":
+          const updatedShoeIndex = currentShoeIndex - 1;
+          setCurrentShoeIndex(updatedShoeIndex)
+          updateNextandPrevButtons('shoe', updatedShoeIndex);
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    const updateNextandPrevButtons = (clothingType: string, currentIndex: number) => {
+      switch (clothingType) {
+        case "top":
+          // if this is now the last image, disable the next button
+          if (currentIndex == (currentTops.length - 1)){
+            setDisableTopNextButton(true);
+          }
+
+          // if this is no longer the first image, enable the previous button
+          if (currentIndex > 0){
+            setDisableTopPrevButton(false);
+          }
+
           // if this is now the first image, disable the prev button
-          if (updatedBottomIndex == 0){
+          if (currentIndex == 0){
+            setDisableTopPrevButton(true);
+          }
+
+          // if this is no longer the last image, enable the next button
+          if (currentIndex < (currentTops.length - 1)){
+            setDisableTopNextButton(false);
+          }
+          break;
+
+        case "bottom":
+          // if this is now the last image, disable the next button
+          if (currentIndex == (currentBottoms.length - 1)){
+            setDisableBottomNextButton(true);
+          }
+
+          // if this is no longer the first image, enable the previous button
+          if (currentIndex > 0){
+            setDisableBottomPrevButton(false);
+          }
+
+          // if this is now the first image, disable the prev button
+          if (currentIndex == 0){
             setDisableBottomPrevButton(true);
           }
 
           // if this is no longer the last image, enable the next button
-          if (updatedBottomIndex < (currentBottoms.length - 1)){
+          if (currentIndex < (currentBottoms.length - 1)){
             setDisableBottomNextButton(false);
           }
           break;
 
-        case "shoes":
-          const updatedShoeIndex = currentShoeIndex - 1;
-          setCurrentShoeIndex(updatedShoeIndex)
+        case "shoe":
+          // if this is now the last image, disable the next button
+          if (currentIndex == (currentShoes.length - 1)){
+            setDisableShoeNextButton(true);
+          }
+
+          // if this is no longer the first image, enable the previous button
+          if (currentIndex > 0){
+            setDisableShoePrevButton(false);
+          }
+
           // if this is now the first image, disable the prev button
-          if (currentShoeIndex == 0){
+          if (currentIndex == 0){
             setDisableShoePrevButton(true);
           }
 
           // if this is no longer the last image, enable the next button
-          if (updatedShoeIndex < (currentShoes.length - 1)){
+          if (currentIndex < (currentShoes.length - 1)){
             setDisableShoeNextButton(false);
           }
           break;
@@ -177,6 +201,24 @@ export default function WardropeApp(props: { toggle: any; }) {
         default:
           break;
       }
+    }
+
+    const getRandomOutfit = () => {
+      // get a random index for the top and bottom
+      const randomTopIndex = Math.floor(Math.random() * currentTops.length);
+      const randomBottomIndex = Math.floor(Math.random() * currentBottoms.length);
+      const randomShoeIndex = Math.floor(Math.random() * currentShoes.length);
+
+
+      //save current indexes as the new random ones
+      setCurrentTopIndex(randomTopIndex);
+      setCurrentBottomIndex(randomBottomIndex);
+      setCurrentShoeIndex(randomShoeIndex);
+
+      // update the buttons
+      updateNextandPrevButtons('top', randomTopIndex);
+      updateNextandPrevButtons('bottom', randomBottomIndex);
+      updateNextandPrevButtons('shoe', randomShoeIndex);
     }
     
     // TODO: FIX LATER  
@@ -316,7 +358,7 @@ export default function WardropeApp(props: { toggle: any; }) {
               padding="$4"
             >
              <div className='options-section'>
-                <Button className='options-button' id='random-outfit-button'>Random Outfit</Button>
+                <Button className='options-button' id='random-outfit-button' onClick={getRandomOutfit}>Random Outfit</Button>
                 <Button className='options-button' id='weather-button'>Weather</Button>           
                 <Button className='options-button' id='occasion-button'>Occasion</Button>
              </div>
