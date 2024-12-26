@@ -4,6 +4,7 @@ import { Winpopup3 } from "@react95/icons";
 import './wardrobe.css'; 
 import { useEffect, useRef, useState } from 'react';
 import axios from "axios";
+import FilterDropdown from './FilterDropdown'
 
 export default function WardropeApp(props: { toggle: any; }) {
     const toggleShowWardrobe = props.toggle;
@@ -36,6 +37,12 @@ export default function WardropeApp(props: { toggle: any; }) {
     const [disableBottomPrevButton, setDisableBottomPrevButton] = useState<boolean>(true);
     const [disableShoeNextButton, setDisableShoeNextButton] = useState<boolean>(true);
     const [disableShoePrevButton, setDisableShoePrevButton] = useState<boolean>(true);
+    const [weatherDropdownOpen, setWeatherDropdownOpen] = useState(false);
+    const [selectedWeatherFilters, setSelectedWeatherFilters] = useState<string[]>(["Show All"]);
+    const [occasionDropdownOpen, setOccasionDropdownOpen] = useState(false);
+    const [selectedOccasionFilters, setSelectedOccasionFilters] = useState<string[]>(["Show All"]);
+    const weatherFilterOptions = ["Show All", "Hot", "Warm", "Windy", "Rainy"];
+    const occasionFilterOptions = ["Show All", "Work", "House Party", "Town", "21st", "Everyday", "Family"];
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -220,6 +227,83 @@ export default function WardropeApp(props: { toggle: any; }) {
       updateNextandPrevButtons('bottom', randomBottomIndex);
       updateNextandPrevButtons('shoe', randomShoeIndex);
     }
+
+    const toggleWeatherDropdown = () => {
+      setWeatherDropdownOpen(!weatherDropdownOpen);
+    };
+
+    const toggleOccasionDropdown = () => {
+      setOccasionDropdownOpen(!occasionDropdownOpen);
+    };
+
+    const handleWeatherSelectionChange = (newSelection: string[]) => {
+      setSelectedWeatherFilters(newSelection);
+      filterWardrobe('weather', newSelection);
+    };
+
+    const handleOccasionSelectionChange = (newSelection: string[]) => {
+        setSelectedOccasionFilters(newSelection);
+        filterWardrobe('occasion', newSelection);
+    };
+
+    const filterWardrobe = (category: string, newSelection: string[]) => {
+      let combinedFilters = [""];
+      switch (category) {
+        case 'occasion':
+          if (newSelection.includes("Show All") && selectedWeatherFilters.includes("Show All")){
+            showEntireWardrobe()
+            return;
+          } else if (selectedWeatherFilters.includes("Show All")){
+            combinedFilters = newSelection;
+          } else {
+            combinedFilters = [...selectedWeatherFilters, ...newSelection];
+          }
+          break;
+        case 'weather':
+          if (newSelection.includes("Show All") && selectedOccasionFilters.includes("Show All")){
+            showEntireWardrobe()
+            return;
+          } else if (selectedOccasionFilters.includes("Show All")){
+            combinedFilters = newSelection;
+          } else {
+            combinedFilters = [...newSelection, ...selectedOccasionFilters];
+          }
+          break;
+      }
+      console.log("combined filters: ", combinedFilters)
+      const filteredWardrobe = completeWardrobe.filter((clothingItem) => {
+        return combinedFilters.every(filterSelection => clothingItem.toLowerCase().includes(filterSelection.toLowerCase()));
+      });
+      
+      console.log("filtered wardrobe: ", filteredWardrobe)
+      
+      setCurrentWardrobeSelection(filteredWardrobe);
+      setCurrentTops(filteredWardrobe.filter(item => item.toLowerCase().includes("top")));
+      setCurrentBottoms(filteredWardrobe.filter(item => item.toLowerCase().includes("bottom")));
+      setCurrentShoes(filteredWardrobe.filter(item => item.toLowerCase().includes("shoe")));
+      setCurrentBottomIndex(0);
+      setCurrentTopIndex(0);
+      setCurrentShoeIndex(0);
+      updateNextandPrevButtons('top', 0);
+      updateNextandPrevButtons('bottom', 0);
+      updateNextandPrevButtons('shoe', 0);
+    }
+
+    const showEntireWardrobe = () => {
+      console.log("showing entire wardrobe");
+      
+      setCurrentWardrobeSelection(completeWardrobe);
+      setCurrentTops(completeWardrobe.filter(item => item.toLowerCase().includes("top")));
+      setCurrentBottoms(completeWardrobe.filter(item => item.toLowerCase().includes("bottom")));
+      setCurrentShoes(completeWardrobe.filter(item => item.toLowerCase().includes("shoe")));
+      setCurrentBottomIndex(0);
+      setCurrentTopIndex(0);
+      setCurrentShoeIndex(0);
+      updateNextandPrevButtons('top', 0);
+      updateNextandPrevButtons('bottom', 0);
+      updateNextandPrevButtons('shoe', 0);
+  
+    }
     
     // TODO: FIX LATER  
     const handleDropdownSelect = () => {
@@ -359,8 +443,22 @@ export default function WardropeApp(props: { toggle: any; }) {
             >
              <div className='options-section'>
                 <Button className='options-button' id='random-outfit-button' onClick={getRandomOutfit}>Random Outfit</Button>
-                <Button className='options-button' id='weather-button'>Weather</Button>           
-                <Button className='options-button' id='occasion-button'>Occasion</Button>
+                <Button className='options-button' id='weather-button' onClick={toggleWeatherDropdown}>Weather</Button>
+                {weatherDropdownOpen && (<FilterDropdown
+                    label="Select Weather Filters"
+                    onSelectionChange={handleWeatherSelectionChange}
+                    options= {weatherFilterOptions}
+                    currentSelections={selectedWeatherFilters}
+                  /> 
+                )} 
+                <Button className='options-button' id='occasion-button' onClick={toggleOccasionDropdown}>Occasion</Button>
+                {occasionDropdownOpen && (<FilterDropdown
+                    label="Select Occasion Filters"
+                    onSelectionChange={handleOccasionSelectionChange}
+                    options= {occasionFilterOptions}
+                    currentSelections={selectedOccasionFilters}
+                  /> 
+                )} 
              </div>
              </Frame>
             
