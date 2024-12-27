@@ -1,0 +1,96 @@
+.outfit-frame{
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    flex-direction: column;
+    gap: 30px;
+}
+
+.scrollable-container {
+    max-height: 96%; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    padding-right: 8px; /* Add some padding to avoid scrollbar overlapping content */
+  }
+
+.filters-section {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    flex-direction: column;
+    margin-top: 10px;
+    gap: 10px;
+
+}
+.clothing-element-frame {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    flex-direction: row;
+    gap: 10px;
+}
+
+.tops-frame, .jackets-frame, .bottoms-frame, .shoes-frame {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    height: 20vh; 
+    width: 20vh;
+}
+
+.options {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    flex-direction: row;
+    gap: 25px
+}
+
+/* #88245c - colour of the banner*/ 
+
+.clothing-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the area without distorting */
+}
+
+.settings-section{
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    flex-direction: column;
+    width: 60%;
+}
+
+.buttons{
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    margin-top: 10px;
+    flex-direction: row;
+    gap: 20px
+}
+
+.save-button {
+    background-color: lightgreen;
+}
+
+.close-button {
+    background-color: #88245c;
+    color: black;
+}
+
+.edit-clothes-view {
+    place-items: center;
+}
+
+.hourglass {
+    top: 45%;
+    left: 45%;
+    position: fixed;
+    z-index: 1000;
+}
+
+.bring-to-front {
+    z-index: 1000; /* Adjust the value as needed */
+    position: relative; /* Ensure the z-index is applied */
+  }

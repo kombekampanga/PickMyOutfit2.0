@@ -47,11 +47,36 @@ app.get("/wardrobe/:imageName", (req, res) => {
   }
 });
 
+app.post("/rename-file", (req, res) => {
+  console.log(req.body)
+  const currentFileName = req.body.currentFileName;
+  const newFileName = req.body.newFileName;
+
+  if (currentFileName === undefined || currentFileName === null || currentFileName.trim() === '' 
+    || newFileName === undefined || newFileName === null || newFileName.trim() === '') {
+   res.status(400).send("Both currentFileName and newFileName are required");
+   return;
+  }
+
+  const currentPath = path.join(__dirname, "uploads", currentFileName);
+  const newPath = path.join(__dirname, "uploads", newFileName);
+
+  fs.rename(currentPath, newPath, (err) => {
+    if (err) {
+      console.error("Error renaming file:", err);
+      res.status(500).send("Error renaming file");
+      return;
+    }
+    res.send("File renamed successfully");
+  });
+});
+
 app.post("/upload", (req, res) => {
   const { fileNames } = req.body;
 
   if (!fileNames || !Array.isArray(fileNames)) {
-    //return res.status(400).send("Invalid file names");
+    res.status(400).send("Invalid file names");
+    return;
   }
 
   // Save the file names to a folder (simulating saving)

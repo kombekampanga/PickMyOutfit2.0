@@ -1,13 +1,23 @@
 import React from 'react';
-import { Frame, List, Modal, TitleBar, Tree, Dropdown, Button,} from '@react95/core';
+import { Frame, List, Modal, TitleBar, Button,} from '@react95/core';
 import { Winpopup3 } from "@react95/icons";
 import './wardrobe.css'; 
 import { useEffect, useRef, useState } from 'react';
 import axios from "axios";
 import FilterDropdown from './FilterDropdown'
+import EditClothesModal from './EditClothesModal';
 
 export default function WardropeApp(props: { toggle: any; }) {
     const toggleShowWardrobe = props.toggle;
+    const [isEditClothesModalOpen, setIsEditClothesModalOpen] = useState<boolean>(false);
+   
+    const closeEditClothesModal = () => {
+      setIsEditClothesModalOpen(false);
+    }
+
+    const handleOpenEditClothesModal = () => {
+      setIsEditClothesModalOpen(true);
+    }
 
     const windowHeight = window.innerHeight;
     let windowSmall = true;
@@ -285,7 +295,6 @@ export default function WardropeApp(props: { toggle: any; }) {
           }
           break;
       }
-      console.log("combined filters: ", combinedFilters)
       // remove all show alls
       if (combinedFilters.includes("Show All")){
         combinedFilters = combinedFilters.filter(filter => filter != "Show All")
@@ -293,9 +302,7 @@ export default function WardropeApp(props: { toggle: any; }) {
       const filteredWardrobe = completeWardrobe.filter((clothingItem) => {
         return combinedFilters.every(filterSelection => clothingItem.toLowerCase().includes(filterSelection.toLowerCase()));
       });
-      
-      console.log("filtered wardrobe: ", filteredWardrobe)
-      
+            
       setCurrentWardrobeSelection(filteredWardrobe);
       setCurrentTops(filteredWardrobe.filter(item => item.toLowerCase().includes("top")));
       setCurrentBottoms(filteredWardrobe.filter(item => item.toLowerCase().includes("bottom")));
@@ -303,9 +310,6 @@ export default function WardropeApp(props: { toggle: any; }) {
       setCurrentBottomIndex(0);
       setCurrentTopIndex(0);
       setCurrentShoeIndex(0);
-      // updateNextandPrevButtons('top', 0);
-      // updateNextandPrevButtons('bottom', 0);
-      // updateNextandPrevButtons('shoe', 0);
     }
 
     const showEntireWardrobe = () => {
@@ -318,10 +322,22 @@ export default function WardropeApp(props: { toggle: any; }) {
       setCurrentBottomIndex(0);
       setCurrentTopIndex(0);
       setCurrentShoeIndex(0);
-      // updateNextandPrevButtons('top', 0);
-      // updateNextandPrevButtons('bottom', 0);
-      // updateNextandPrevButtons('shoe', 0);
-  
+    }
+
+    function saveClothingFilters(oldFileName: string, newFileName: string): void {
+      const completeWardrobeIndex = completeWardrobe.findIndex(fileName => fileName === oldFileName);
+      if (completeWardrobeIndex !== -1) {
+        const updatedWardrobe = [...completeWardrobe];
+        updatedWardrobe[completeWardrobeIndex] = newFileName;
+        setCompleteWardrobe(updatedWardrobe);
+      }
+
+      const currentWardrobeSelectionIndex = currentWardrobeSelection.findIndex(fileName => fileName === oldFileName);
+      if (currentWardrobeSelectionIndex !== -1) {
+        const updatedWardrobe = [...completeWardrobe];
+        updatedWardrobe[currentWardrobeSelectionIndex] = newFileName;
+        setCurrentWardrobeSelection(updatedWardrobe);
+      }
     }
     
     // TODO: FIX LATER  
@@ -353,135 +369,144 @@ export default function WardropeApp(props: { toggle: any; }) {
     };
 
     return(
+        <>
         <Modal
-          width="800px"
-          height={windowSmall ? "470px" : "600px"}
-          icon={<Winpopup3 variant="16x16_4" />}
-          title="Kombe's Wardrobe"
-          dragOptions={{
-            defaultPosition: {
-              x: screenW,
-              y: screenH,
-            },
-          }}
-          titleBarOptions={[
-            <TitleBar.Help key="help" onClick={() => alert("Help!")} />,
-            <Modal.Minimize />,
-            <TitleBar.Close key="close" onClick={handleCloseWardrobe} />,
-          ]}
-          menu={[
-            {
-              name: "File",
-              list: (
-                <List width="200px" className="dropdown-menu">
-                  <List.Item key="exit-item" >
-                    Load Wardrobe
-                      <input
-                      ref={fileInputRef}
-                      type="file"
-                      style={{ display: "none" }}
-                      {...{ webkitdirectory: "true" } as any} // Allows folder selection
-                      onChange={handleFileChange}
-                    />
-                  </List.Item>
-                  <List.Item key="exit-item" onClick={handleCloseWardrobe}>
-                    Exit
-                  </List.Item>
-                </List>
-              ),
-              
-            },
-            {
-              name: "Edit",
-              list: (
-                <List width="200px" className="dropdown-menu">
-                  <List.Item key="copy-item">Copy</List.Item>
-                </List>
-              ),
-            },
-          ]}
+        width="800px"
+        height={windowSmall ? "470px" : "600px"}
+        icon={<Winpopup3 variant="16x16_4" />}
+        title="Kombe's Wardrobe"
+        dragOptions={{
+          defaultPosition: {
+            x: screenW,
+            y: screenH,
+          },
+        }}
+        titleBarOptions={[
+          <TitleBar.Help key="help" onClick={() => alert("Help!")} />,
+          <Modal.Minimize />,
+          <TitleBar.Close key="close" onClick={handleCloseWardrobe} />,
+        ]}
+        menu={[
+          {
+            name: "File",
+            list: (
+              <List width="200px" className="dropdown-menu">
+                {/* <List.Item key="exit-item">
+                  Load Wardrobe
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    style={{ display: "none" }}
+                    {...{ webkitdirectory: "true" } as any} // Allows folder selection
+                    onChange={handleFileChange} />
+                </List.Item> */}
+                <List.Item key="exit-item" onClick={handleCloseWardrobe}>
+                  Exit
+                </List.Item>
+              </List>
+            ),
+          },
+          {
+            name: "Edit",
+            list: (
+              <List width="200px" className="dropdown-menu">
+                <List.Item key="edit-filters-item" onClick={handleOpenEditClothesModal}>Edit Clothes Filters</List.Item>
+              </List>
+            ),
+          },
+        ]}
+      >
+        <div
+          style={windowSmall ? { height: "91.5%" } : { height: "93.8%", display: 'flex', flexDirection: 'row' }}
+          className='wardrobe-window'
         >
-          <div
-            style={windowSmall ? { height: "91.5%" } : { height: "93.8%", display: 'flex', flexDirection: 'row'}}
-            className='wardrobe-window'
+          {/* Frame for the entire outfit*/}
+          <Frame
+            w="65%"
+            h="100%"
+            bgColor="$material"
+            boxShadow="$out"
+            padding="$4"
           >
-            {/* Frame for the entire outfit*/}
-            <Frame
-              w="65%"
-              h="100%"
-              bgColor="$material"
-              boxShadow="$out"
-              padding="$4"
-            >
-              <Frame h="100%" bgColor="white" boxShadow="$in" overflow="auto" className='outfit-frame'>
-                <div className='clothing-element-frame'>
-                    <Button disabled={disableTopPrevButton} onClick={() => getPrevPhoto('top')}>Prev</Button>
-                    <div className='tops-frame'>
-                        <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                            <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentTops[currentTopIndex]}`} alt="top" />
-                        </Frame>
-                    </div>
-                    <Button disabled={disableTopNextButton} onClick={() => getNextPhoto('top')}>Next</Button>
+            <Frame h="100%" bgColor="white" boxShadow="$in" overflow="auto" className='outfit-frame'>
+              <div className='clothing-element-frame'>
+                <Button disabled={disableTopPrevButton} onClick={() => getPrevPhoto('top')}>Prev</Button>
+                <div className='tops-frame'>
+                  <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
+                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentTops[currentTopIndex]}`} alt="top" />
+                  </Frame>
+                </div>
+                <Button disabled={disableTopNextButton} onClick={() => getNextPhoto('top')}>Next</Button>
 
-                    {/* <div className='jackets-frame'>
-                        <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                            Jackets
-                        </Frame>
-                        
-                    </div> */}
+                {/* <div className='jackets-frame'>
+        <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
+            Jackets
+        </Frame>
+        
+    </div> */}
+              </div>
+              <div className='clothing-element-frame'>
+                <Button disabled={disableBottomPrevButton} onClick={() => getPrevPhoto('bottom')}>Prev</Button>
+                <div className='bottoms-frame'>
+                  <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
+                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentBottoms[currentBottomIndex]}`} alt="bottom" />
+                  </Frame>
                 </div>
-                <div className='clothing-element-frame'>
-                    <Button disabled={disableBottomPrevButton} onClick={() => getPrevPhoto('bottom')}>Prev</Button>
-                    <div className='bottoms-frame'>
-                        <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                          <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentBottoms[currentBottomIndex]}`} alt="top" />
-                        </Frame>
-                    </div>
-                    <Button disabled={disableBottomNextButton} onClick={() => getNextPhoto('bottom')}>Next</Button>
+                <Button disabled={disableBottomNextButton} onClick={() => getNextPhoto('bottom')}>Next</Button>
+              </div>
+
+              <div className='clothing-element-frame'>
+                <Button disabled={disableShoePrevButton} onClick={() => getPrevPhoto('shoe')}>Prev</Button>
+                <div className='shoes-frame'>
+                  <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
+                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentShoes[currentShoeIndex]}`} alt="bottom" />  
+                  </Frame>
                 </div>
-                
-                <div className='clothing-element-frame'>
-                    <Button disabled={disableShoePrevButton} onClick={() => getPrevPhoto('shoe')}>Prev</Button>
-                    <div className='shoes-frame'>
-                    <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                        Shoes
-                    </Frame>
-                    </div>
-                    <Button disabled={disableShoeNextButton} onClick={() => getNextPhoto('shoe')}>Next</Button>
-                </div>
-              </Frame>
-              
+                <Button disabled={disableShoeNextButton} onClick={() => getNextPhoto('shoe')}>Next</Button>
+              </div>
             </Frame>
-             {/*Frame for buttons*/}
-             <Frame
-              w="35%"
-              h="100%"
-              bgColor="$material"
-              boxShadow="$out"
-              padding="$4"
-            >
-             <div className='options-section'>
-                <Button className='options-button' id='random-outfit-button' onClick={getRandomOutfit}>Random Outfit</Button>
-                <Button className='options-button' id='weather-button' onClick={toggleWeatherDropdown}>Weather</Button>
-                {weatherDropdownOpen && (<FilterDropdown
-                    label="Select Weather Filters"
-                    onSelectionChange={handleWeatherSelectionChange}
-                    options= {weatherFilterOptions}
-                    currentSelections={selectedWeatherFilters}
-                  /> 
-                )} 
-                <Button className='options-button' id='occasion-button' onClick={toggleOccasionDropdown}>Occasion</Button>
-                {occasionDropdownOpen && (<FilterDropdown
-                    label="Select Occasion Filters"
-                    onSelectionChange={handleOccasionSelectionChange}
-                    options= {occasionFilterOptions}
-                    currentSelections={selectedOccasionFilters}
-                  /> 
-                )} 
-             </div>
-             </Frame>
-            
+
+          </Frame>
+          {/*Frame for buttons*/}
+          <Frame
+            w="35%"
+            h="100%"
+            bgColor="$material"
+            boxShadow="$out"
+            padding="$4"
+          >
+            <div className='options-section'>
+              <Button className='options-button' id='random-outfit-button' onClick={getRandomOutfit}>Random Outfit</Button>
+              <Button className='options-button' id='weather-button' onClick={toggleWeatherDropdown}>Weather</Button>
+              {weatherDropdownOpen && (<FilterDropdown
+                label="Select Weather Filters"
+                onSelectionChange={handleWeatherSelectionChange}
+                options={weatherFilterOptions}
+                currentSelections={selectedWeatherFilters} />
+              )}
+              <Button className='options-button' id='occasion-button' onClick={toggleOccasionDropdown}>Occasion</Button>
+              {occasionDropdownOpen && (<FilterDropdown
+                label="Select Occasion Filters"
+                onSelectionChange={handleOccasionSelectionChange}
+                options={occasionFilterOptions}
+                currentSelections={selectedOccasionFilters} />
+              )}
             </div>
-        </Modal>
+          </Frame>
+
+        </div>
+      </Modal>
+
+      {isEditClothesModalOpen && <EditClothesModal 
+          onSave={saveClothingFilters}
+          onClose={closeEditClothesModal}
+          topFileName={`${currentTops[currentTopIndex]}`}
+          bottomFileName={`${currentBottoms[currentBottomIndex]}`}
+          shoeFileName={`${currentShoes[currentShoeIndex]}`}
+          occasionFilterOptions={occasionFilterOptions.filter(option => option.toLowerCase() !== "show all")}
+          weatherFilterOptions={weatherFilterOptions.filter(option => option.toLowerCase() !== "show all")}
+        />}
+      
+      </>
     )
 }

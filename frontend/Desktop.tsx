@@ -1,3 +1,4 @@
+import React from 'react';
 import WardropeApp from "./WardrobeApp";
 import { TaskBar, List } from '@react95/core';
 import { ReaderClosed, WindowsExplorer } from '@react95/icons';
@@ -19,7 +20,6 @@ function Desktop(){
             }
          />
             <WardropeApp toggle={true}/>
-
         </div>
     )
 }
