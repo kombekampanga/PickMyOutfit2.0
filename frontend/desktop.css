@@ -4,3 +4,8 @@
     background-position: center;
     height: 100vh; /* Ensure the div takes up the full viewport height */
 }
+
+.desktop-icons {
+    margin-left: 20px;
+    margin-top: 30px
+}

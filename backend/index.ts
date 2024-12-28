@@ -48,7 +48,6 @@ app.get("/wardrobe/:imageName", (req, res) => {
 });
 
 app.post("/rename-file", (req, res) => {
-  console.log(req.body)
   const currentFileName = req.body.currentFileName;
   const newFileName = req.body.newFileName;
 

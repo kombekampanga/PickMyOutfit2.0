@@ -1,7 +1,7 @@
 import React from 'react';
 import WardropeApp from "./WardrobeApp";
 import { TaskBar, List } from '@react95/core';
-import { ReaderClosed, WindowsExplorer } from '@react95/icons';
+import { ReaderClosed, WindowsExplorer, Explorer108, Pbrush1, MsawtAwtIcon, Awfxcg321304, Amovie2, CdMusic, Mshearts1 } from '@react95/icons';
 import './desktop.css'
 
 function Desktop(){
@@ -18,8 +18,42 @@ function Desktop(){
                     </List.Item>
                 </List>
             }
-         />
+            />
             <WardropeApp toggle={true}/>
+            <div className="desktop-icons">
+                <div className="inactive-icon">
+                    <Explorer108 variant="32x32_4" />
+                    <p>Recycle Bin</p>
+                </div>
+                <div className={"inactive-icon"}>
+                    <Pbrush1 variant="32x32_4" />
+                    <p>Paint</p>
+                </div>
+                <div className="inactive-icon">
+                    <MsawtAwtIcon variant="32x32_4" />
+                    <p>Coding</p>
+                </div>
+                <div
+                    className="inactive-icon">
+                    <Awfxcg321304 variant="32x32_4" />
+                    <p>My Contacts</p>
+                </div>
+                <div
+                    className="inactive-icon">
+                    <Amovie2 variant="32x32_4" />
+                    <p>Rom Coms</p>
+                </div>
+                <div
+                    className="inactive-icon">
+                    <CdMusic variant="32x32_4" />
+                    <p>Music</p>
+                </div>
+                <div
+                    className="inactive-icon">
+                    <Mshearts1 variant="32x32_4" />
+                    <p>Shhhh...</p>
+                </div>
+            </div>
         </div>
     )
 }

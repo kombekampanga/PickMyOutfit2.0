@@ -12,7 +12,6 @@ export default function FilterDropdown(props: DropdownProps) {
   const [selectedOptions, setSelectedOptions] = useState<string[]>(props.currentSelections);
   
   useEffect(() => {
-    console.log("props.currentSelections updated", props.currentSelections);
     setSelectedOptions(props.currentSelections);
   }, [props.currentSelections]);
 

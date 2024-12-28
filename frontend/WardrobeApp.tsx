@@ -52,7 +52,7 @@ export default function WardropeApp(props: { toggle: any; }) {
     const [occasionDropdownOpen, setOccasionDropdownOpen] = useState(false);
     const [selectedOccasionFilters, setSelectedOccasionFilters] = useState<string[]>(["Show All"]);
     const weatherFilterOptions = ["Show All", "Hot", "Warm", "Windy", "Rainy"];
-    const occasionFilterOptions = ["Show All", "Work", "House Party", "Town", "21st", "Everyday", "Family"];
+    const occasionFilterOptions = ["Show All", "Work", "Dinner", "Party", "Active", "Everyday", "Family"];
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -60,9 +60,7 @@ export default function WardropeApp(props: { toggle: any; }) {
       const fetchWardrobe = async () => { 
         try {
           const response = await axios.get('http://localhost:5000/getExistingWardrobe')
-  
-          console.log('Response:', response.data);
-  
+    
           const allClothes = response.data;
           setCompleteWardrobe(allClothes);
           setCurrentWardrobeSelection(allClothes);
