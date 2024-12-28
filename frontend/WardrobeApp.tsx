@@ -1,13 +1,13 @@
 import React from 'react';
 import { Frame, List, Modal, TitleBar, Button,} from '@react95/core';
-import { Winpopup3 } from "@react95/icons";
+import { Star } from "@react95/icons";
 import './wardrobe.css'; 
 import { useEffect, useRef, useState } from 'react';
 import axios from "axios";
 import FilterDropdown from './FilterDropdown'
 import EditClothesModal from './EditClothesModal';
 
-export default function WardropeApp(props: { toggle: any; }) {
+export default function WardropeApp(props: { toggle: boolean; }) {
     const toggleShowWardrobe = props.toggle;
     const [isEditClothesModalOpen, setIsEditClothesModalOpen] = useState<boolean>(false);
    
@@ -371,7 +371,7 @@ export default function WardropeApp(props: { toggle: any; }) {
         <Modal
         width="800px"
         height={windowSmall ? "470px" : "600px"}
-        icon={<Winpopup3 variant="16x16_4" />}
+        icon={<Star variant="16x16_4" />}
         title="Kombe's Wardrobe"
         dragOptions={{
           defaultPosition: {

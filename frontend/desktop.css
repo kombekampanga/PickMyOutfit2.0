@@ -1,11 +1,8 @@
 .desktop {
-    background-image: url('./assets/background.jpg'); /* Add your image URL here */
-    background-size: cover;
-    background-position: center;
     height: 100vh; /* Ensure the div takes up the full viewport height */
 }
 
 .desktop-icons {
     margin-left: 20px;
-    margin-top: 30px
+    padding-top: 20px
 }

@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import WardropeApp from "./WardrobeApp";
 import { TaskBar, List } from '@react95/core';
-import { ReaderClosed, WindowsExplorer, Explorer108, Pbrush1, MsawtAwtIcon, Awfxcg321304, Amovie2, CdMusic, Mshearts1 } from '@react95/icons';
+import { ReaderClosed, WindowsExplorer, Explorer108, Pbrush1, MsawtAwtIcon, Awfxcg321304, Amovie2, CdMusic, Mshearts1, Star } from '@react95/icons';
 import './desktop.css'
 
 function Desktop(){
+
+    const [showWardrobe, setIsWardrobeOpen] = useState(true);
+
+    const toggleOpenWardrobe = () => {
+        setIsWardrobeOpen(!showWardrobe);
+    }
     return(
         <div className="desktop">
             <TaskBar
@@ -19,7 +25,7 @@ function Desktop(){
                 </List>
             }
             />
-            <WardropeApp toggle={true}/>
+            {showWardrobe && <WardropeApp toggle={showWardrobe}/>}
             <div className="desktop-icons">
                 <div className="inactive-icon">
                     <Explorer108 variant="32x32_4" />
@@ -28,10 +34,6 @@ function Desktop(){
                 <div className={"inactive-icon"}>
                     <Pbrush1 variant="32x32_4" />
                     <p>Paint</p>
-                </div>
-                <div className="inactive-icon">
-                    <MsawtAwtIcon variant="32x32_4" />
-                    <p>Coding</p>
                 </div>
                 <div
                     className="inactive-icon">
@@ -51,7 +53,12 @@ function Desktop(){
                 <div
                     className="inactive-icon">
                     <Mshearts1 variant="32x32_4" />
-                    <p>Shhhh...</p>
+                    <p>Shhh...</p>
+                </div>
+                <div
+                    className="active-icon" onDoubleClick={toggleOpenWardrobe}>
+                    <Star variant="32x32_4" />
+                    <p>Wardrobe</p>
                 </div>
             </div>
         </div>

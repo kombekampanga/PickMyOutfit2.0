@@ -53,10 +53,6 @@
 
 /* #88245c - colour of the banner*/ 
 
-.background {
-    background-image: url('./assets/background.jpg');
-}
-
 .clothing-image {
     width: 100%;
     height: 100%;
