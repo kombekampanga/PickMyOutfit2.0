@@ -1,6 +1,6 @@
 import React from 'react';
 import { Frame, List, Modal, TitleBar, Button,} from '@react95/core';
-import { Star } from "@react95/icons";
+import { Star, Lock } from "@react95/icons";
 import './wardrobe.css'; 
 import { useEffect, useRef, useState } from 'react';
 import axios from "axios";
@@ -54,6 +54,9 @@ export default function WardropeApp(props: WardrobeProps) {
     const [selectedWeatherFilters, setSelectedWeatherFilters] = useState<string[]>(["Show All"]);
     const [occasionDropdownOpen, setOccasionDropdownOpen] = useState(false);
     const [selectedOccasionFilters, setSelectedOccasionFilters] = useState<string[]>(["Show All"]);
+    const [isTopLocked, setIsTopLocked] = useState<boolean>(false);
+    const [isBottomLocked, setIsBottomLocked] = useState<boolean>(false);
+    const [isShoeLocked, setIsShoeLocked] = useState<boolean>(false);
     const weatherFilterOptions = ["Show All", "Hot", "Warm", "Windy", "Rainy"];
     const occasionFilterOptions = ["Show All", "Work", "Dinner", "Party", "Active", "Everyday", "Family"];
 
@@ -241,20 +244,32 @@ export default function WardropeApp(props: WardrobeProps) {
     }
 
     const getRandomOutfit = () => {
-      // get a random index for the top and bottom
+      if (!isTopLocked){
+        getRandomTop();
+      }
+      if (!isBottomLocked){
+        getRandomBottom();
+      }
+      if (!isShoeLocked){
+        getRandomShoe();
+      }
+    }
+
+    const getRandomTop = () => {
       const randomTopIndex = Math.floor(Math.random() * currentTops.length);
-      const randomBottomIndex = Math.floor(Math.random() * currentBottoms.length);
-      const randomShoeIndex = Math.floor(Math.random() * currentShoes.length);
-
-
-      //save current indexes as the new random ones
       setCurrentTopIndex(randomTopIndex);
-      setCurrentBottomIndex(randomBottomIndex);
-      setCurrentShoeIndex(randomShoeIndex);
-
-      // update the buttons
       updateNextandPrevButtons('top', randomTopIndex);
+    }
+
+    const getRandomBottom = () => {
+      const randomBottomIndex = Math.floor(Math.random() * currentBottoms.length);
+      setCurrentBottomIndex(randomBottomIndex);
       updateNextandPrevButtons('bottom', randomBottomIndex);
+    }
+
+    const getRandomShoe = () => {
+      const randomShoeIndex = Math.floor(Math.random() * currentShoes.length);
+      setCurrentShoeIndex(randomShoeIndex);
       updateNextandPrevButtons('shoe', randomShoeIndex);
     }
 
@@ -265,6 +280,18 @@ export default function WardropeApp(props: WardrobeProps) {
     const toggleOccasionDropdown = () => {
       setOccasionDropdownOpen(!occasionDropdownOpen);
     };
+
+    const toggleTopLock = () => {
+      setIsTopLocked(!isTopLocked);
+  }
+
+    const toggleBottomLock = () => {
+      setIsBottomLocked(!isBottomLocked);
+  }
+
+    const toggleShoeLock = () => {
+      setIsShoeLocked(!isShoeLocked);
+    }
 
     const handleWeatherSelectionChange = (newSelection: string[]) => {
       setSelectedWeatherFilters(newSelection);
@@ -277,6 +304,10 @@ export default function WardropeApp(props: WardrobeProps) {
     };
 
     const filterWardrobe = (category: string, newSelection: string[]) => {
+      setIsTopLocked(false);
+      setIsBottomLocked(false);
+      setIsShoeLocked(false);
+      
       let combinedFilters = [""];
       switch (category) {
         case 'occasion':
@@ -434,23 +465,28 @@ export default function WardropeApp(props: WardrobeProps) {
                 <Button disabled={disableTopPrevButton} onClick={() => getPrevPhoto('top')}>Prev</Button>
                 <div className='tops-frame'>
                   <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentTops[currentTopIndex]}`} alt="top" />
+                    <img 
+                      className='clothing-image' 
+                      src={`http://localhost:5000/wardrobe/${currentTops[currentTopIndex]}`} 
+                      alt="top" 
+                      onDoubleClick={toggleTopLock}
+                    />
+                    {isTopLocked && <Lock variant="16x16_4" />}
                   </Frame>
                 </div>
                 <Button disabled={disableTopNextButton} onClick={() => getNextPhoto('top')}>Next</Button>
-
-                {/* <div className='jackets-frame'>
-        <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-            Jackets
-        </Frame>
-        
-    </div> */}
               </div>
               <div className='clothing-element-frame'>
                 <Button disabled={disableBottomPrevButton} onClick={() => getPrevPhoto('bottom')}>Prev</Button>
                 <div className='bottoms-frame'>
                   <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentBottoms[currentBottomIndex]}`} alt="bottom" />
+                    <img 
+                      className='clothing-image' 
+                      src={`http://localhost:5000/wardrobe/${currentBottoms[currentBottomIndex]}`} 
+                      alt="bottom" 
+                      onDoubleClick={toggleBottomLock} 
+                    />
+                    {isBottomLocked && <Lock variant="16x16_4" />}
                   </Frame>
                 </div>
                 <Button disabled={disableBottomNextButton} onClick={() => getNextPhoto('bottom')}>Next</Button>
@@ -460,7 +496,13 @@ export default function WardropeApp(props: WardrobeProps) {
                 <Button disabled={disableShoePrevButton} onClick={() => getPrevPhoto('shoe')}>Prev</Button>
                 <div className='shoes-frame'>
                   <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentShoes[currentShoeIndex]}`} alt="shoe" />  
+                    <img 
+                      className='clothing-image' 
+                      src={`http://localhost:5000/wardrobe/${currentShoes[currentShoeIndex]}`} 
+                      alt="shoe" 
+                      onDoubleClick={toggleShoeLock}
+                    />  
+                    {isShoeLocked && <Lock variant="16x16_4" />}                  
                   </Frame>
                 </div>
                 <Button disabled={disableShoeNextButton} onClick={() => getNextPhoto('shoe')}>Next</Button>
