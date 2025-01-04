@@ -25,7 +25,7 @@ function Desktop(){
                 </List>
             }
             />
-            {showWardrobe && <WardropeApp toggle={showWardrobe}/>}
+            {showWardrobe && <WardropeApp onClose={toggleOpenWardrobe}/>}
             <div className="desktop-icons">
                 <div className="inactive-icon">
                     <Explorer108 variant="32x32_4" />

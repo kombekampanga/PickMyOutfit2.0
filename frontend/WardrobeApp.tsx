@@ -7,8 +7,11 @@ import axios from "axios";
 import FilterDropdown from './FilterDropdown'
 import EditClothesModal from './EditClothesModal';
 
-export default function WardropeApp(props: { toggle: boolean; }) {
-    const toggleShowWardrobe = props.toggle;
+interface WardrobeProps {
+  onClose: () => void;
+}
+
+export default function WardropeApp(props: WardrobeProps) {
     const [isEditClothesModalOpen, setIsEditClothesModalOpen] = useState<boolean>(false);
    
     const closeEditClothesModal = () => {
@@ -29,7 +32,7 @@ export default function WardropeApp(props: { toggle: boolean; }) {
     const screenH = -30;
 
     const handleCloseWardrobe = () => {
-        toggleShowWardrobe(false);
+      props.onClose();
     };
 
     // load wardrobe
@@ -457,7 +460,7 @@ export default function WardropeApp(props: { toggle: boolean; }) {
                 <Button disabled={disableShoePrevButton} onClick={() => getPrevPhoto('shoe')}>Prev</Button>
                 <div className='shoes-frame'>
                   <Frame w="100%" h="100%" bgColor="$material" boxShadow="$out" padding="$4">
-                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentShoes[currentShoeIndex]}`} alt="bottom" />  
+                    <img className='clothing-image' src={`http://localhost:5000/wardrobe/${currentShoes[currentShoeIndex]}`} alt="shoe" />  
                   </Frame>
                 </div>
                 <Button disabled={disableShoeNextButton} onClick={() => getNextPhoto('shoe')}>Next</Button>
