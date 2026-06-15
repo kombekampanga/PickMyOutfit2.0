@@ -21,6 +21,4 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
-
-backend/uploads
+*.sw?s
